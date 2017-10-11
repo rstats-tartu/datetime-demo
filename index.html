@@ -142,16 +142,24 @@ $(document).ready(function () {
 <pre><code>## The following object is masked from 'package:base':
 ## 
 ##     date</code></pre>
-<p>In this session, we’ll explore the lubridate R package, by Garrett Grolemund and Hadley Wickham. This tutorial is from RPubs: <a href="https://rpubs.com/davoodastaraky/lubridate" class="uri">https://rpubs.com/davoodastaraky/lubridate</a>. You can read more about lubridate from R4DS: <a href="http://r4ds.had.co.nz/dates-and-times.html" class="uri">http://r4ds.had.co.nz/dates-and-times.html</a></p>
+<p>In this session, we’ll explore the lubridate R package, by Garrett Grolemund and Hadley Wickham. This tutorial is from RPubs: <a href="https://rpubs.com/davoodastaraky/lubridate" class="uri">https://rpubs.com/davoodastaraky/lubridate</a>.</p>
+<p>You can read more about lubridate from R4DS: <a href="http://r4ds.had.co.nz/dates-and-times.html" class="uri">http://r4ds.had.co.nz/dates-and-times.html</a></p>
+<p>For more help:</p>
+<pre class="r"><code>?lubridate</code></pre>
+<p>Also search for package vignette!</p>
 <p>According to the package authors, “lubridate has a consistent, memorable syntax, that makes working with dates fun instead of frustrating.” If you’ve ever worked with dates in R, that statement probably has your attention.</p>
 <p>There are different date and time representations, in order to view our locale:</p>
 <pre class="r"><code>Sys.getlocale(&quot;LC_TIME&quot;)</code></pre>
 <pre><code>## [1] &quot;et_EE.UTF-8&quot;</code></pre>
-<p>“lubridate” contains many useful functions. We’ll only be covering the basics here. Type help(package = lubridate) to bring up an overview of the package, including the package DESCRIPTION, a list of available functions, and a link to the official package vignette.</p>
+<pre class="r"><code>Sys.Date()</code></pre>
+<pre><code>## [1] &quot;2017-10-11&quot;</code></pre>
+<pre class="r"><code>Sys.time()</code></pre>
+<pre><code>## [1] &quot;2017-10-11 17:00:47 EEST&quot;</code></pre>
+<pre class="r"><code>Sys.timezone()</code></pre>
+<pre><code>## [1] &quot;Europe/Riga&quot;</code></pre>
+<p>“lubridate” contains many useful functions. We’ll only be covering the basics here. Type <strong>help(package = lubridate)</strong> to bring up an overview of the package, including the package DESCRIPTION, a list of available functions, and a link to the official package vignette.</p>
 <p>The <code>today()</code> function returns today’s date. Lets store the result in a new variable called this_day.</p>
-<pre class="r"><code>library(lubridate)
-
-this_day &lt;- today()
+<pre class="r"><code>this_day &lt;- today()
 this_day</code></pre>
 <pre><code>## [1] &quot;2017-10-11&quot;</code></pre>
 </div>
@@ -161,7 +169,7 @@ this_day</code></pre>
 <pre class="r"><code>y &lt;- year(this_day)
 m &lt;- month(this_day)
 d &lt;- day(this_day)
-rbind(y,m,d)</code></pre>
+rbind(y, m, d)</code></pre>
 <pre><code>##   [,1]
 ## y 2017
 ## m   10
@@ -170,7 +178,7 @@ rbind(y,m,d)</code></pre>
 <pre class="r"><code>w &lt;- wday(this_day)
 m &lt;- mday(this_day)
 y &lt;- yday(this_day)
-rbind(w,m,y)</code></pre>
+rbind(w, m, y)</code></pre>
 <pre><code>##   [,1]
 ## w    4
 ## m   11
@@ -182,16 +190,18 @@ rbind(w,m,y)</code></pre>
 <p>In addition to handling dates, lubridate is great for working with date and time combinations, referred to as date-times. The <code>now()</code> function returns the date-time representing this exact moment in time. We store the result in a variable called this_moment.</p>
 <pre class="r"><code>this_moment &lt;- now()
 this_moment</code></pre>
-<pre><code>## [1] &quot;2017-10-11 09:15:52 EEST&quot;</code></pre>
+<pre><code>## [1] &quot;2017-10-11 17:00:47 EEST&quot;</code></pre>
+<pre class="r"><code>class(this_moment)</code></pre>
+<pre><code>## [1] &quot;POSIXct&quot; &quot;POSIXt&quot;</code></pre>
 <p>Just like with dates, we can extract the year, month, day, or day of week. However, we can also use <code>hour()</code>, <code>minute()</code>, and <code>second()</code> to extract specific time information.</p>
-<pre class="r"><code>hr &lt;- hour(this_moment)
-minu &lt;- minute(this_moment)
-sec &lt;- second(this_moment)
-rbind(hr,minu,sec)</code></pre>
-<pre><code>##          [,1]
-## hr    9.00000
-## minu 15.00000
-## sec  52.27296</code></pre>
+<pre class="r"><code>h &lt;- hour(this_moment)
+m &lt;- minute(this_moment)
+s &lt;- second(this_moment)
+rbind(h, m, s)</code></pre>
+<pre><code>##       [,1]
+## h 17.00000
+## m  0.00000
+## s 47.31341</code></pre>
 </div>
 <div id="parsing-dates" class="section level2">
 <h2>Parsing dates</h2>
@@ -219,6 +229,9 @@ my_date</code></pre>
 <pre class="r"><code>ymd(&quot;192012&quot;)</code></pre>
 <pre><code>## Warning: All formats failed to parse. No formats found.</code></pre>
 <pre><code>## [1] NA</code></pre>
+<pre class="r"><code>dmy(&quot;192012&quot;)</code></pre>
+<pre><code>## Warning: All formats failed to parse. No formats found.</code></pre>
+<pre><code>## [1] NA</code></pre>
 <p>We got a warning message because it was unclear what date you wanted. When in doubt, it’s best to be more explicit. Lets repeat the same command, but add two dashes OR two forward slashes to “192012” so that it’s clear we want January 2, 1920.</p>
 <pre class="r"><code># or ymd(&quot;1920-1-2&quot;)
 ymd(&quot;1920/1/2&quot;)</code></pre>
@@ -227,27 +240,44 @@ ymd(&quot;1920/1/2&quot;)</code></pre>
 <div id="parsing-date-times" class="section level2">
 <h2>Parsing date-times</h2>
 <p>In addition to dates, we can parse date-times. Lets created a date-time object called dt1 and we parse it with <code>ymd_hms()</code>.</p>
-<pre class="r"><code>dt1 &lt;- '2017-10-11 18:05:02'</code></pre>
-<pre class="r"><code>ymd_hms(dt1)</code></pre>
+<pre class="r"><code>dt1 &lt;- '2017-10-11 18:05:02'
+dt1</code></pre>
+<pre><code>## [1] &quot;2017-10-11 18:05:02&quot;</code></pre>
+<pre class="r"><code>train &lt;- ymd_hms(dt1)
+train</code></pre>
 <pre><code>## [1] &quot;2017-10-11 18:05:02 UTC&quot;</code></pre>
+<pre class="r"><code>class(train)</code></pre>
+<pre><code>## [1] &quot;POSIXct&quot; &quot;POSIXt&quot;</code></pre>
 <p>What if we have a time, but no date? Lets use the appropriate lubridate function to parse “03:22:14” (hh:mm:ss).</p>
-<pre class="r"><code>hms(&quot;03:22:14&quot;)</code></pre>
+<pre class="r"><code>tim &lt;- hms(&quot;03:22:14&quot;)
+tim</code></pre>
 <pre><code>## [1] &quot;3H 22M 14S&quot;</code></pre>
+<pre class="r"><code>class(tim)</code></pre>
+<pre><code>## [1] &quot;Period&quot;
+## attr(,&quot;package&quot;)
+## [1] &quot;lubridate&quot;</code></pre>
 <p>lubridate is also capable of handling vectors of dates, which is particularly helpful when you need to parse an entire column of data.</p>
-<pre class="r"><code>dt2 &lt;- c('2014-05-14', '2014-09-22', '2014-07-11')</code></pre>
+<pre class="r"><code>dt2 &lt;- c(&quot;2014-05-14&quot;, &quot;2014-09-22&quot;, &quot;2014-07-11&quot;)</code></pre>
 <pre class="r"><code>ymd(dt2)</code></pre>
+<pre><code>## [1] &quot;2014-05-14&quot; &quot;2014-09-22&quot; &quot;2014-07-11&quot;</code></pre>
+<p>Different date formats in vector.</p>
+<pre class="r"><code>dt3 &lt;- c(&quot;2014-05-14&quot;, &quot;2014-09-22&quot;, &quot;2014 July 11&quot;)
+ymd(dt3)</code></pre>
 <pre><code>## [1] &quot;2014-05-14&quot; &quot;2014-09-22&quot; &quot;2014-07-11&quot;</code></pre>
 </div>
 <div id="update-date-time" class="section level2">
 <h2>Update date-time</h2>
 <p>The <code>update()</code> function allows us to update one or more components of a date-time. For example, let’s say the current time is 08:34:55 (hh:mm:ss).</p>
 <p>Lets update this_moment to the new time using update(this_moment, hours = 8, minutes = 34, seconds = 55).</p>
+<pre class="r"><code>this_moment</code></pre>
+<pre><code>## [1] &quot;2017-10-11 17:00:47 EEST&quot;</code></pre>
 <pre class="r"><code>update(this_moment, hours = 8, minutes = 34, seconds = 55)</code></pre>
 <pre><code>## [1] &quot;2017-10-11 08:34:55 EEST&quot;</code></pre>
 <p>Lets update() this_moment, so that it contain the new time.</p>
-<pre class="r"><code>this_moment &lt;- update(this_moment, hours = 11, minutes = 55, seconds = 0)
+<pre class="r"><code>## update time using previously created objects
+this_moment &lt;- update(this_moment, hours = h, minutes = m, seconds = s)
 this_moment</code></pre>
-<pre><code>## [1] &quot;2017-10-11 11:55:00 EEST&quot;</code></pre>
+<pre><code>## [1] &quot;2017-10-11 17:00:47 EEST&quot;</code></pre>
 </div>
 <div id="dst-and-time-zones-and-arithmetic-operations" class="section level2">
 <h2>DST and time zones and arithmetic operations</h2>
@@ -256,47 +286,52 @@ this_moment</code></pre>
 <li>You seem to have misplaced your itinerary, but you know that your Air China flight departs Helsinki at 16:50 the day after tomorrow.</li>
 <li>You also know that your flight is scheduled to arrive in Hong Kong exactly 17 hours and 35 minutes after departure.</li>
 </ul>
-<p>Let’s reconstruct your itinerary from what you can remember, starting with the full date and time of your departure. We will approach this by finding the current date in Helsinki, adding 2 full days, then setting the time to 16:50.</p>
+<p>Let’s reconstruct your itinerary from what you can remember, starting with the full date and time of your departure. W e will approach this by finding the current date in Helsinki, adding 2 full days, then setting the time to 16:50.</p>
 <p>To find the current date in Helsinki, we’ll use the <code>now()</code> function again. This time, however, we’ll specify the time zone that we want: “Europe/Helsinki”.</p>
 <p>For a complete list of valid time zones for use with lubridate, check out the following Wikipedia <a href="http://en.wikipedia.org/wiki/List_of_tz_database_time_zones" class="uri">http://en.wikipedia.org/wiki/List_of_tz_database_time_zones</a>.</p>
 <pre class="r"><code>hel &lt;- now(&quot;Europe/Helsinki&quot;)
 hel</code></pre>
-<pre><code>## [1] &quot;2017-10-11 09:15:52 EEST&quot;</code></pre>
+<pre><code>## [1] &quot;2017-10-11 17:00:47 EEST&quot;</code></pre>
 <p>Your flight is the day after tomorrow (in Helsinki time), so we want to add two days to hel. One nice aspect of lubridate is that it allows you to use arithmetic operators on dates and times. In this case, we’d like to add two days to hel, so we can use the following expression: hel + days(2)</p>
 <pre class="r"><code>depart &lt;- hel + days(2)
 depart</code></pre>
-<pre><code>## [1] &quot;2017-10-13 09:15:52 EEST&quot;</code></pre>
+<pre><code>## [1] &quot;2017-10-13 17:00:47 EEST&quot;</code></pre>
 <p>So now depart contains the date of the day after tomorrow. We use update() to add the correct hours (16) and minutes (50) to depart. Reassign the result to depart.</p>
 <pre class="r"><code>depart &lt;- update(depart, hours = 16, minutes = 50)
 depart</code></pre>
-<pre><code>## [1] &quot;2017-10-13 16:50:52 EEST&quot;</code></pre>
+<pre><code>## [1] &quot;2017-10-13 16:50:47 EEST&quot;</code></pre>
 <p>Your friend wants to know what time she should pick you up from the airport in Hong Kong. Now that we have the exact date and time of your departure from Helsinki, we can figure out the exact time of your arrival in Hong Kong.</p>
 <p>The first step is to add 17 hours and 35 minutes to your departure time. Recall that hel + days(2) added two days to the current time in Helsinki. Use the same approach to add 17 hours and 35 minutes to the date-time stored in depart.</p>
 <pre class="r"><code>arrive &lt;- depart + hours(17) + minutes(35)
-arrive</code></pre>
-<pre><code>## [1] &quot;2017-10-14 10:25:52 EEST&quot;</code></pre>
+class(hours(17))</code></pre>
+<pre><code>## [1] &quot;Period&quot;
+## attr(,&quot;package&quot;)
+## [1] &quot;lubridate&quot;</code></pre>
+<pre class="r"><code>arrive</code></pre>
+<pre><code>## [1] &quot;2017-10-14 10:25:47 EEST&quot;</code></pre>
 <p>The arrive variable contains the time that it will be in Helsinki when you arrive in Hong Kong. What we really want to know is what time is will be in Hong Kong when you arrive, so that your friend knows when to meet you.</p>
 <p>The <code>with_tz()</code> function returns a date-time as it would appear in another time zone. We use with_tz() to convert arrive to the “Asia/Hong_Kong” time zone.</p>
-<pre class="r"><code>Sys.timezone()</code></pre>
-<pre><code>## [1] &quot;Europe/Riga&quot;</code></pre>
 <pre class="r"><code>arrive &lt;- with_tz(arrive, &quot;Asia/Hong_Kong&quot;)
 arrive</code></pre>
-<pre><code>## [1] &quot;2017-10-14 15:25:52 HKT&quot;</code></pre>
+<pre><code>## [1] &quot;2017-10-14 15:25:47 HKT&quot;</code></pre>
 </div>
 <div id="date-time-interval" class="section level2">
 <h2>Date-time interval</h2>
 <p>Fast forward to your arrival in Hong Kong. You and your friend have just met at the airport and you realize that the last time you were together was in Singapore on June 17, 2008. Naturally, you’d like to know exactly how long it has been. We only need to use the appropriate lubridate function to parse “June 17, 2008”. This time, however, we should specify an extra argument, tz = “Singapore”.</p>
-<pre class="r"><code>?strptime
-last_time &lt;- mdy(&quot;6-17-2008&quot;, tz = &quot;Asia/Singapore&quot;)
+<pre class="r"><code>last_time &lt;- mdy(&quot;6 17 2008&quot;, tz = &quot;Asia/Singapore&quot;)
 last_time</code></pre>
 <pre><code>## [1] &quot;2008-06-17 +08&quot;</code></pre>
-<p>We can create a <code>interval()</code> that spans from last_time to arrive</p>
+<p>We can create a <code>interval()</code> that spans from last_time to arrive.</p>
 <pre class="r"><code>how_long &lt;- interval(last_time, arrive)
 how_long</code></pre>
-<pre><code>## [1] 2008-06-17 +08--2017-10-14 15:25:52 +08</code></pre>
+<pre><code>## [1] 2008-06-17 +08--2017-10-14 15:25:47 +08</code></pre>
+<pre class="r"><code>class(how_long)</code></pre>
+<pre><code>## [1] &quot;Interval&quot;
+## attr(,&quot;package&quot;)
+## [1] &quot;lubridate&quot;</code></pre>
 <p>Now use <code>as.period()</code> to see how long it’s been.</p>
 <pre class="r"><code>as.period(how_long)</code></pre>
-<pre><code>## [1] &quot;9y 3m 27d 15H 25M 52.6116418838501S&quot;</code></pre>
+<pre><code>## [1] &quot;9y 3m 27d 15H 25M 47.6303300857544S&quot;</code></pre>
 <p>What to do with daylight saving time DST? Because durations represent an exact number of seconds, sometimes you might get an unexpected result:</p>
 <pre class="r"><code>one_pm &lt;- ymd_hms(&quot;2016-03-12 13:00:00&quot;, tz = &quot;America/New_York&quot;)
 one_pm</code></pre>

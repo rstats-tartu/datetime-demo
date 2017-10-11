@@ -18,26 +18,33 @@ library(lubridate)
 
 In this session, we’ll explore the lubridate R package, by Garrett Grolemund and Hadley Wickham. 
 This tutorial is from RPubs: [https://rpubs.com/davoodastaraky/lubridate](https://rpubs.com/davoodastaraky/lubridate).
+
 You can read more about lubridate from R4DS: http://r4ds.had.co.nz/dates-and-times.html
+
+For more help:
+```{r}
+?lubridate
+```
+Also search for package vignette!
 
 According to the package authors, “lubridate has a consistent, memorable syntax, that makes working with dates fun instead of frustrating.” 
 If you’ve ever worked with dates in R, that statement probably has your attention.
 
 There are different date and time representations, in order to view our locale:
-
 ```{r}
 Sys.getlocale("LC_TIME")
+Sys.Date()
+Sys.time()
+Sys.timezone()
 ```
 
 "lubridate" contains many useful functions. 
 We'll only be covering the basics here. 
-Type help(package = lubridate) to bring up an overview of the package, including the package DESCRIPTION, a list of available functions, and a link to the official package vignette.
+Type **help(package = lubridate)** to bring up an overview of the package, including the package DESCRIPTION, a list of available functions, and a link to the official package vignette.
 
 The `today()` function returns today’s date. Lets store the result in a new variable called this_day.
 
 ```{r}
-library(lubridate)
-
 this_day <- today()
 this_day
 ```
@@ -46,14 +53,14 @@ this_day
 
 There are three components to this date. 
 In order, they are year, month, and day. 
-We can extract any of these components using the `year()`, `month()`, or `day()` function, respectively. 
+We can extract any of these components using the `year()`, `month()`, or `day()` function, respectively.
 We try them on this_day now.
 
 ```{r}
 y <- year(this_day)
 m <- month(this_day)
 d <- day(this_day)
-rbind(y,m,d)
+rbind(y, m, d)
 ```
 
 We can also get the day of the week from this_day using the `wday()` function. 
@@ -64,7 +71,7 @@ Similarly we can extract day of month and day of year.
 w <- wday(this_day)
 m <- mday(this_day)
 y <- yday(this_day)
-rbind(w,m,y)
+rbind(w, m, y)
 ```
 
 We can add a second argument, `label = TRUE`, to display the name of the weekday (represented as an ordered factor).
@@ -80,15 +87,16 @@ We store the result in a variable called this_moment.
 ```{r}
 this_moment <- now()
 this_moment
+class(this_moment)
 ```
 
 Just like with dates, we can extract the year, month, day, or day of week. However, we can also use `hour()`, `minute()`, and `second()` to extract specific time information.
 
 ```{r}
-hr <- hour(this_moment)
-minu <- minute(this_moment)
-sec <- second(this_moment)
-rbind(hr,minu,sec)
+h <- hour(this_moment)
+m <- minute(this_moment)
+s <- second(this_moment)
+rbind(h, m, s)
 ```
 
 ## Parsing dates
@@ -138,6 +146,7 @@ Lets try `ymd("192012")` to see what happens when we give it something more ambi
 We surround the number with quotes again, just to be consistent with the way most dates are represented (as character strings).
 ```{r}
 ymd("192012")
+dmy("192012")
 ```
 
 We got a warning message because it was unclear what date you wanted. 
@@ -153,25 +162,36 @@ ymd("1920/1/2")
 In addition to dates, we can parse date-times. Lets created a date-time object called dt1 and we parse it with `ymd_hms()`.
 ```{r}
 dt1 <- '2017-10-11 18:05:02'
+dt1
 ```
 
 
 ```{r}
-ymd_hms(dt1)
+train <- ymd_hms(dt1)
+train
+class(train)
 ```
 
 What if we have a time, but no date? Lets use the appropriate lubridate function to parse "03:22:14" (hh:mm:ss).
 ```{r}
-hms("03:22:14")
+tim <- hms("03:22:14")
+tim
+class(tim)
 ```
 
 lubridate is also capable of handling vectors of dates, which is particularly helpful when you need to parse an entire column of data.
 ```{r}
-dt2 <- c('2014-05-14', '2014-09-22', '2014-07-11')
+dt2 <- c("2014-05-14", "2014-09-22", "2014-07-11")
 ```
 
 ```{r}
 ymd(dt2)
+```
+
+Different date formats in vector.
+```{r}
+dt3 <- c("2014-05-14", "2014-09-22", "2014 July 11")
+ymd(dt3)
 ```
 
 ## Update date-time
@@ -180,12 +200,14 @@ The `update()` function allows us to update one or more components of a date-tim
 
 Lets update this_moment to the new time using update(this_moment, hours = 8, minutes = 34, seconds = 55).
 ```{r}
+this_moment
 update(this_moment, hours = 8, minutes = 34, seconds = 55)
 ```
 
 Lets update() this_moment, so that it contain the new time.
 ```{r}
-this_moment <- update(this_moment, hours = 11, minutes = 55, seconds = 0)
+## update time using previously created objects
+this_moment <- update(this_moment, hours = h, minutes = m, seconds = s)
 this_moment
 ```
 
@@ -196,7 +218,8 @@ this_moment
 - You also know that your flight is scheduled to arrive in Hong Kong exactly 17 hours and 35 minutes after departure.
 
 Let's reconstruct your itinerary from what you can remember, starting with the full date and time of your departure. 
-We will approach this by finding the current date in Helsinki, adding 2 full days, then setting the time to 16:50.
+W
+e will approach this by finding the current date in Helsinki, adding 2 full days, then setting the time to 16:50.
 
 To find the current date in Helsinki, we'll use the `now()` function again. 
 This time, however, we'll specify the time zone that we want: "Europe/Helsinki". 
@@ -231,6 +254,7 @@ Recall that hel + days(2) added two days to the current time in Helsinki.
 Use the same approach to add 17 hours and 35 minutes to the date-time stored in depart.
 ```{r}
 arrive <- depart + hours(17) + minutes(35)
+class(hours(17))
 arrive
 ```
 
@@ -239,7 +263,6 @@ What we really want to know is what time is will be in Hong Kong when you arrive
 
 The `with_tz()` function returns a date-time as it would appear in another time zone. We use with_tz() to convert arrive to the “Asia/Hong_Kong” time zone.
 ```{r}
-Sys.timezone()
 arrive <- with_tz(arrive, "Asia/Hong_Kong")
 arrive
 ```
@@ -252,15 +275,15 @@ Naturally, you'd like to know exactly how long it has been.
 We only need to use the appropriate lubridate function to parse "June 17, 2008". 
 This time, however, we should specify an extra argument, tz = "Singapore".
 ```{r}
-?strptime
-last_time <- mdy("6-17-2008", tz = "Asia/Singapore")
+last_time <- mdy("6 17 2008", tz = "Asia/Singapore")
 last_time
 ```
 
-We can create a `interval()` that spans from last_time to arrive
+We can create a `interval()` that spans from last_time to arrive.
 ```{r}
 how_long <- interval(last_time, arrive)
 how_long
+class(how_long)
 ```
 
 Now use `as.period()` to see how long it’s been.
@@ -290,7 +313,6 @@ t_age
 ```{r}
 as.duration(t_age)
 ```
-
 
 
 Reference
