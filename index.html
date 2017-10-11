@@ -182,7 +182,7 @@ rbind(w,m,y)</code></pre>
 <p>In addition to handling dates, lubridate is great for working with date and time combinations, referred to as date-times. The <code>now()</code> function returns the date-time representing this exact moment in time. We store the result in a variable called this_moment.</p>
 <pre class="r"><code>this_moment &lt;- now()
 this_moment</code></pre>
-<pre><code>## [1] &quot;2017-10-11 09:13:17 EEST&quot;</code></pre>
+<pre><code>## [1] &quot;2017-10-11 09:15:52 EEST&quot;</code></pre>
 <p>Just like with dates, we can extract the year, month, day, or day of week. However, we can also use <code>hour()</code>, <code>minute()</code>, and <code>second()</code> to extract specific time information.</p>
 <pre class="r"><code>hr &lt;- hour(this_moment)
 minu &lt;- minute(this_moment)
@@ -190,8 +190,8 @@ sec &lt;- second(this_moment)
 rbind(hr,minu,sec)</code></pre>
 <pre><code>##          [,1]
 ## hr    9.00000
-## minu 13.00000
-## sec  17.70173</code></pre>
+## minu 15.00000
+## sec  52.27296</code></pre>
 </div>
 <div id="parsing-dates" class="section level2">
 <h2>Parsing dates</h2>
@@ -261,27 +261,27 @@ this_moment</code></pre>
 <p>For a complete list of valid time zones for use with lubridate, check out the following Wikipedia <a href="http://en.wikipedia.org/wiki/List_of_tz_database_time_zones" class="uri">http://en.wikipedia.org/wiki/List_of_tz_database_time_zones</a>.</p>
 <pre class="r"><code>hel &lt;- now(&quot;Europe/Helsinki&quot;)
 hel</code></pre>
-<pre><code>## [1] &quot;2017-10-11 09:13:18 EEST&quot;</code></pre>
+<pre><code>## [1] &quot;2017-10-11 09:15:52 EEST&quot;</code></pre>
 <p>Your flight is the day after tomorrow (in Helsinki time), so we want to add two days to hel. One nice aspect of lubridate is that it allows you to use arithmetic operators on dates and times. In this case, we’d like to add two days to hel, so we can use the following expression: hel + days(2)</p>
 <pre class="r"><code>depart &lt;- hel + days(2)
 depart</code></pre>
-<pre><code>## [1] &quot;2017-10-13 09:13:18 EEST&quot;</code></pre>
+<pre><code>## [1] &quot;2017-10-13 09:15:52 EEST&quot;</code></pre>
 <p>So now depart contains the date of the day after tomorrow. We use update() to add the correct hours (16) and minutes (50) to depart. Reassign the result to depart.</p>
 <pre class="r"><code>depart &lt;- update(depart, hours = 16, minutes = 50)
 depart</code></pre>
-<pre><code>## [1] &quot;2017-10-13 16:50:18 EEST&quot;</code></pre>
+<pre><code>## [1] &quot;2017-10-13 16:50:52 EEST&quot;</code></pre>
 <p>Your friend wants to know what time she should pick you up from the airport in Hong Kong. Now that we have the exact date and time of your departure from Helsinki, we can figure out the exact time of your arrival in Hong Kong.</p>
 <p>The first step is to add 17 hours and 35 minutes to your departure time. Recall that hel + days(2) added two days to the current time in Helsinki. Use the same approach to add 17 hours and 35 minutes to the date-time stored in depart.</p>
 <pre class="r"><code>arrive &lt;- depart + hours(17) + minutes(35)
 arrive</code></pre>
-<pre><code>## [1] &quot;2017-10-14 10:25:18 EEST&quot;</code></pre>
+<pre><code>## [1] &quot;2017-10-14 10:25:52 EEST&quot;</code></pre>
 <p>The arrive variable contains the time that it will be in Helsinki when you arrive in Hong Kong. What we really want to know is what time is will be in Hong Kong when you arrive, so that your friend knows when to meet you.</p>
 <p>The <code>with_tz()</code> function returns a date-time as it would appear in another time zone. We use with_tz() to convert arrive to the “Asia/Hong_Kong” time zone.</p>
 <pre class="r"><code>Sys.timezone()</code></pre>
 <pre><code>## [1] &quot;Europe/Riga&quot;</code></pre>
 <pre class="r"><code>arrive &lt;- with_tz(arrive, &quot;Asia/Hong_Kong&quot;)
 arrive</code></pre>
-<pre><code>## [1] &quot;2017-10-14 15:25:18 HKT&quot;</code></pre>
+<pre><code>## [1] &quot;2017-10-14 15:25:52 HKT&quot;</code></pre>
 </div>
 <div id="date-time-interval" class="section level2">
 <h2>Date-time interval</h2>
@@ -293,10 +293,10 @@ last_time</code></pre>
 <p>We can create a <code>interval()</code> that spans from last_time to arrive</p>
 <pre class="r"><code>how_long &lt;- interval(last_time, arrive)
 how_long</code></pre>
-<pre><code>## [1] 2008-06-17 +08--2017-10-14 15:25:18 +08</code></pre>
+<pre><code>## [1] 2008-06-17 +08--2017-10-14 15:25:52 +08</code></pre>
 <p>Now use <code>as.period()</code> to see how long it’s been.</p>
 <pre class="r"><code>as.period(how_long)</code></pre>
-<pre><code>## [1] &quot;9y 3m 27d 15H 25M 18.039587020874S&quot;</code></pre>
+<pre><code>## [1] &quot;9y 3m 27d 15H 25M 52.6116418838501S&quot;</code></pre>
 <p>What to do with daylight saving time DST? Because durations represent an exact number of seconds, sometimes you might get an unexpected result:</p>
 <pre class="r"><code>one_pm &lt;- ymd_hms(&quot;2016-03-12 13:00:00&quot;, tz = &quot;America/New_York&quot;)
 one_pm</code></pre>
