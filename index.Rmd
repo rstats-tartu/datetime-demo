@@ -12,11 +12,14 @@ knitr::opts_chunk$set(echo = TRUE)
 ## Loading Libraries
 
 ```{r}
+library(tidyverse)
 library(lubridate)
 ```
 
 In this session, we’ll explore the lubridate R package, by Garrett Grolemund and Hadley Wickham. 
-This tutorial is from RPubs: [https://rpubs.com/davoodastaraky/lubridate](https://rpubs.com/davoodastaraky/lubridate)
+This tutorial is from RPubs: [https://rpubs.com/davoodastaraky/lubridate](https://rpubs.com/davoodastaraky/lubridate).
+You can read more about lubridate from R4DS: http://r4ds.had.co.nz/dates-and-times.html
+
 According to the package authors, “lubridate has a consistent, memorable syntax, that makes working with dates fun instead of frustrating.” 
 If you’ve ever worked with dates in R, that statement probably has your attention.
 
@@ -49,8 +52,7 @@ We try them on this_day now.
 ```{r}
 y <- year(this_day)
 m <- month(this_day)
-d <-day(this_day)
-
+d <- day(this_day)
 rbind(y,m,d)
 ```
 
@@ -102,6 +104,7 @@ We must surround the date with quotes.
 ```{r}
 my_date <- ymd("1989-05-17")
 my_date
+# mdy("January 31st, 2017")
 ```
 
 It looks almost the same, except for the addition of a time zone, which we’ll discuss later in the lesson. Below the surface, there’s another important change that takes place when lubridate parses a date.
@@ -233,12 +236,10 @@ arrive
 
 The arrive variable contains the time that it will be in Helsinki when you arrive in Hong Kong. 
 What we really want to know is what time is will be in Hong Kong when you arrive, so that your friend knows when to meet you.
-```{r}
-
-```
 
 The `with_tz()` function returns a date-time as it would appear in another time zone. We use with_tz() to convert arrive to the “Asia/Hong_Kong” time zone.
 ```{r}
+Sys.timezone()
 arrive <- with_tz(arrive, "Asia/Hong_Kong")
 arrive
 ```
@@ -267,13 +268,30 @@ Now use `as.period()` to see how long it’s been.
 as.period(how_long)
 ```
 
-This is where things get a little tricky. 
-Because of things like leap years, leap seconds, and daylight savings time, the length of any given minute, day, month, week, or year is relative to when it occurs. 
-In contrast, the length of a second is always the same, regardless of when it occurs.
+What to do with daylight saving time DST?
+Because durations represent an exact number of seconds, sometimes you might get an unexpected result:
+```{r}
+one_pm <- ymd_hms("2016-03-12 13:00:00", tz = "America/New_York")
+one_pm
+# because of DST Mar-12 has only 23 hours 
+one_pm + ddays(1)
+## here we have everything ok?
+one_pm <- ymd_hms("2017-10-31 13:00:00", tz = "Europe/Tallinn")
+one_pm
+one_pm + ddays(1)
+```
 
-To address these complexities, the authors of lubridate introduce **four classes of time related objects: instants, intervals, durations, and periods.** 
+# How old is Taavi?
+```{r}
+t_age <- today() - ymd(19740105)
+t_age
+```
 
-These topics are beyond the scope of this lesson, but you can find a complete discussion in the 2011 Journal of Statistical Software paper titled ‘Dates and Times Made Easy with lubridate’
+```{r}
+as.duration(t_age)
+```
+
+
 
 Reference
 
