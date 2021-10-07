@@ -16,10 +16,9 @@ library(tidyverse)
 library(lubridate)
 ```
 
-In this session, we’ll explore the lubridate R package, by Garrett Grolemund and Hadley Wickham. 
-This tutorial is from RPubs: [https://rpubs.com/davoodastaraky/lubridate](https://rpubs.com/davoodastaraky/lubridate).
+In this session, we'll explore the **lubridate** R package created by Garrett Grolemund and Hadley Wickham. 
 
-You can read more about lubridate from R4DS: http://r4ds.had.co.nz/dates-and-times.html
+You can read more about **lubridate** from R4DS: http://r4ds.had.co.nz/dates-and-times.html
 
 For more help:
 ```{r}
@@ -27,8 +26,9 @@ For more help:
 ```
 Also search for package vignette!
 
-According to the package authors, “lubridate has a consistent, memorable syntax, that makes working with dates fun instead of frustrating.” 
-If you’ve ever worked with dates in R, that statement probably has your attention.
+According to the package authors, 'lubridate has a consistent, memorable syntax, that makes working with dates fun instead of frustrating.'
+
+If you've ever worked with dates in R you know what this means.
 
 There are different date and time representations, in order to view our locale:
 ```{r}
@@ -38,8 +38,8 @@ Sys.time()
 Sys.timezone()
 ```
 
-"lubridate" contains many useful functions. 
-We'll only be covering the basics here. 
+**lubridate** contains many useful functions. 
+
 Type **help(package = lubridate)** to bring up an overview of the package, including the package DESCRIPTION, a list of available functions, and a link to the official package vignette.
 
 The `today()` function returns today’s date. Lets store the result in a new variable called this_day.
@@ -130,6 +130,7 @@ ymd("1989 May 17")
 Despite being formatted differently, the last two dates had the year first, then the month, then the day. 
 Hence, we used `ymd()` to parse them. 
 What about the appropriate function is for parsing "March 12, 1975"?
+
 ```{r}
 mdy("March 12, 1975")
 ```
@@ -137,6 +138,7 @@ mdy("March 12, 1975")
 We can even throw something funky at it and lubridate will often know the right thing to do. 
 Lets parse 25081985, which is supposed to represent the 25th day of August 1985. 
 Note that we are actually parsing a numeric value here – not a character string – so leave off the quotes.
+
 ```{r}
 dmy(25081985)
 ```
@@ -144,6 +146,7 @@ dmy(25081985)
 But be careful, it's not magic. 
 Lets try `ymd("192012")` to see what happens when we give it something more ambiguous.
 We surround the number with quotes again, just to be consistent with the way most dates are represented (as character strings).
+
 ```{r}
 ymd("192012")
 dmy("192012")
@@ -152,6 +155,7 @@ dmy("192012")
 We got a warning message because it was unclear what date you wanted. 
 When in doubt, it's best to be more explicit. 
 Lets repeat the same command, but add two dashes OR two forward slashes to “192012” so that it's clear we want January 2, 1920.
+
 ```{r}
 # or ymd("1920-1-2")
 ymd("1920/1/2")
@@ -160,6 +164,7 @@ ymd("1920/1/2")
 ## Parsing date-times
 
 In addition to dates, we can parse date-times. Lets created a date-time object called dt1 and we parse it with `ymd_hms()`.
+
 ```{r}
 dt1 <- '2017-10-11 18:05:02'
 dt1
@@ -179,7 +184,8 @@ tim
 class(tim)
 ```
 
-lubridate is also capable of handling vectors of dates, which is particularly helpful when you need to parse an entire column of data.
+**lubridate** is also capable of handling vectors of dates, which is particularly helpful when you need to parse an entire column of data.
+
 ```{r}
 dt2 <- c("2014-05-14", "2014-09-22", "2014-07-11")
 ```
@@ -224,14 +230,14 @@ e will approach this by finding the current date in Helsinki, adding 2 full days
 To find the current date in Helsinki, we'll use the `now()` function again. 
 This time, however, we'll specify the time zone that we want: "Europe/Helsinki". 
 
-For a complete list of valid time zones for use with lubridate, check out the following Wikipedia [http://en.wikipedia.org/wiki/List_of_tz_database_time_zones](http://en.wikipedia.org/wiki/List_of_tz_database_time_zones).
+For a complete list of valid time zones for use with **lubridate**, check out the following Wikipedia [http://en.wikipedia.org/wiki/List_of_tz_database_time_zones](http://en.wikipedia.org/wiki/List_of_tz_database_time_zones).
 ```{r}
 hel <- now("Europe/Helsinki")
 hel
 ```
 
 Your flight is the day after tomorrow (in Helsinki time), so we want to add two days to hel. 
-One nice aspect of lubridate is that it allows you to use arithmetic operators on dates and times. 
+One nice aspect of **lubridate** is that it allows you to use arithmetic operators on dates and times. 
 In this case, we'd like to add two days to hel, so we can use the following expression: hel + days(2)
 ```{r}
 depart <- hel + days(2)
@@ -252,6 +258,7 @@ Now that we have the exact date and time of your departure from Helsinki, we can
 The first step is to add 17 hours and 35 minutes to your departure time. 
 Recall that hel + days(2) added two days to the current time in Helsinki. 
 Use the same approach to add 17 hours and 35 minutes to the date-time stored in depart.
+
 ```{r}
 arrive <- depart + hours(17) + minutes(35)
 class(hours(17))
@@ -272,7 +279,7 @@ arrive
 Fast forward to your arrival in Hong Kong. 
 You and your friend have just met at the airport and you realize that the last time you were together was in Singapore on June 17, 2008. 
 Naturally, you'd like to know exactly how long it has been. 
-We only need to use the appropriate lubridate function to parse "June 17, 2008". 
+We only need to use the appropriate **lubridate** function to parse "June 17, 2008". 
 This time, however, we should specify an extra argument, tz = "Singapore".
 ```{r}
 last_time <- mdy("6 17 2008", tz = "Asia/Singapore")
@@ -293,6 +300,7 @@ as.period(how_long)
 
 What to do with daylight saving time DST?
 Because durations represent an exact number of seconds, sometimes you might get an unexpected result:
+
 ```{r}
 one_pm <- ymd_hms("2016-03-12 13:00:00", tz = "America/New_York")
 one_pm
@@ -304,15 +312,24 @@ one_pm
 one_pm + ddays(1)
 ```
 
-# How old is Taavi?
-```{r}
-t_age <- today() - ymd(19740105)
-t_age
-```
+# How old are you?
 
 ```{r}
-as.duration(t_age)
+my_birthday <- "1974-01-05"
+age <- today() - ymd(my_birthday) # age as difftime
 ```
+
+
+```{r}
+as.period(age) / as.period(years(1))
+```
+
+OR
+
+```{r}
+interval(ymd(my_birthday), today()) / years(1)
+```
+
 
 
 Reference
